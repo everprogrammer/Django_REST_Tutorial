@@ -1,12 +1,11 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from .models import Employee
 
 # Create your views here.
 def employeeView(request):
-    emp = {
-        'id': 123,
-        'name': 'John',
-        'sal': 1000_000,
-    }
+    
+    data = Employee.objects.all() # it's a queryset, now we need a dictionary
+    response = {'employees': list(data.values('name', 'sal'))}
 
-    return JsonResponse(emp)    # Serializes the dictionary to json
+    return JsonResponse(response)    # Serializes the dictionary to json
