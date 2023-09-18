@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from django.db import models
 import phonenumbers
-from phonenumbers.phonenumberutil import NumberFormatException
+# from phonenumbers.phonenumberutil import NumberFormatException
 from django.core.exceptions import ValidationError
 
 # Create your models here.
@@ -13,12 +13,18 @@ class Flight(models.Model):
     date_of_departure = models.DateField()
     estimated_time_of_departure = models.TimeField()
 
+    def __str__(self):
+        return f"({self.flight_number})-({self.operating_airline})-({self.date_of_departure})"
+
 class Passenger(models.Model):
     first_name = models.CharField(max_length=80)
     last_name = models.CharField(max_length=80)
     middle_name = models.CharField(max_length=80, null=True)
     email = models.EmailField(max_length=80)
-    phone_number = models.CharField()
+    phone_number = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.first_name}-{self.last_name}"
 
     def clean(self) -> None:
         try:
@@ -38,8 +44,8 @@ class Passenger(models.Model):
         super().save(*args, **kwargs)
 
 class Reservation(models.Model):
-    flight = models.OneToOneField(Flight, on_delete=models.CASCADE)
+    flight = models.ForeignKey(Flight, on_delete=models.CASCADE)
     passenger = models.OneToOneField(Passenger, on_delete=models.CASCADE)
-    
+
 
 
